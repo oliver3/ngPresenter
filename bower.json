@@ -1,0 +1,17 @@
+{
+  "name": "ngPresenter",
+  "version": "0.0.0",
+  "homepage": "https://github.com/oliver3/ngPresenter",
+  "authors": [
+    "Oliver <github@oliver3.nl>"
+  ],
+  "description": "Framework to create HTML presentations, using AngularJS",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
