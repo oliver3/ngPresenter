@@ -1,5 +1,5 @@
 (function () {
-  var ngPresenter = angular.module('ngPresenter', []);
+  var ngPresenter = angular.module('ngPresenter', ['ngAnimate']);
 
   ngPresenter.controller('PresenterController', ['$log', '$document', '$scope',
       function ($log, $document, $scope) {
@@ -89,36 +89,41 @@
     }
   }]);
 
-  ngPresenter.directive('slide', ['$log', function ($log) {
+  ngPresenter.directive('slide', ['$log', '$animate', function ($log, $animate) {
     return {
       restrict: 'E',
       transclude: true,
       replace: true,
       scope: true,
-      template: '<div class="slide" ng-show="currentSlide" ng-transclude>' +
-
+      template: '<div class="slide" ng-transclude>' +
                 '</div>',
       //template: '<div class="slide" ng-transclude></div>',
       require: '^presentation',
       link: function ($scope, $element, $attr, presenter) {
         $scope.show = show;
         $scope.hide = hide;
-        $scope.currentSlide = false;
         $scope.slideNumber = presenter.registerSlide($scope);
 
         $log.log('Registered slide ' + $scope.slideNumber);
 
         function show(direction) {
           $log.log('Showing slide ' + $scope.slideNumber + ' direction ' + direction);
-          $scope.currentSlide = true;
+
+          $element.toggleClass('show-backwards', direction < 0);
+          $animate.addClass($element, 'show').then(function () {
+            $element.removeClass('show-backwards');
+          });
         }
 
         function hide(direction) {
           $log.log('Hiding slide ' + $scope.slideNumber + ' direction ' + direction);
-          $scope.currentSlide = false;
+
+          $element.toggleClass('hide-backwards', direction < 0);
+          $animate.removeClass($element, 'show').then(function () {
+            $element.removeClass('hide-backwards');
+          });
         }
       }
-
     };
   }]);
 
