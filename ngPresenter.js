@@ -1,38 +1,25 @@
 (function () {
   var ngPresenter = angular.module('ngPresenter', []);
 
-  ngPresenter.controller('PresenterController',
-      ['$log', '$document', '$scope', function ($log, $document, $scope) {
+  ngPresenter.controller('PresenterController', ['$log', '$document', '$scope',
+      function ($log, $document, $scope) {
     var presenter = this;
 
     presenter.registerSlide = registerSlide;
     presenter.nextSlide = nextSlide;
     presenter.selectSlide = selectSlide;
+    presenter.progress = '0%';
 
     var currentSlide = 0;
-    var allSlides = [];
-
-    $document.bind('keydown', function (event) {
-      $log.log(event.which);
-      $scope.$apply(function () {
-        switch(event.which) {
-          case 39:
-            presenter.nextSlide(1);
-            break;
-          case 37:
-            presenter.nextSlide(-1);
-            break;
-        }
-      });
-    });
-
+    var slides = [];
 
     function registerSlide(slide) {
       $log.log('presenter.registerSlide()');
-      if (allSlides.length === 0) {
-        slide.currentSlide = true;
+      if (slides.length === 0) {
+        slide.show(0);
       }
-      allSlides.push(slide);
+      slides.push(slide);
+      return slides.length;
     }
 
     function nextSlide(offset) {
@@ -46,13 +33,33 @@
     function selectSlide(nr) {
       if (nr < 0) {
         nr = 0;
-      } else if (nr >= allSlides.length) {
-        nr = allSlides.length - 1;
+      } else if (nr >= slides.length) {
+        nr = slides.length - 1;
       }
-      allSlides[currentSlide].currentSlide = false;
-      currentSlide = nr;
-      allSlides[currentSlide].currentSlide = true;
+
+      var direction = nr - currentSlide;
+
+      if (direction !== 0) {
+        slides[currentSlide].hide(direction);
+        slides[nr].show(direction);
+
+        currentSlide = nr;
+        presenter.progress = (currentSlide / (slides.length - 1)) * 100 + '%';
+      }
     }
+
+    $document.bind('keydown', function (event) {
+      $scope.$apply(function () {
+        switch (event.which) {
+          case 39:
+            presenter.nextSlide(1);
+            break;
+          case 37:
+            presenter.nextSlide(-1);
+            break;
+        }
+      });
+    });
 
   }]);
 
@@ -62,23 +69,64 @@
       transclude: true,
       replace: true,
       scope: true,
-      template: '<div ng-transclude></div>',
+      template: '<div class="presentation">' +
+                '  <div class="slides" ng-transclude></div>' +
+                '  <div class="progressbar-background"><div class="progressbar" style="width: {{presenter.progress}}"></div></div>' +
+                '</div>',
       controller: 'PresenterController',
       controllerAs: 'presenter'
     };
   }]);
 
-  ngPresenter.directive('slide', [function () {
+  ngPresenter.directive('group', [function () {
     return {
       restrict: 'E',
       transclude: true,
       replace: true,
       scope: true,
-      template: '<div class="slide" ng-show="currentSlide" ng-transclude></div>',
+      template: '<div class="group" ng-transclude></div>',
+      require: '^presentation'
+    }
+  }]);
+
+  ngPresenter.directive('slide', ['$log', function ($log) {
+    return {
+      restrict: 'E',
+      transclude: true,
+      replace: true,
+      scope: true,
+      template: '<div class="slide" ng-show="currentSlide" ng-transclude>' +
+
+                '</div>',
+      //template: '<div class="slide" ng-transclude></div>',
       require: '^presentation',
       link: function ($scope, $element, $attr, presenter) {
-        presenter.registerSlide($scope);
+        $scope.show = show;
+        $scope.hide = hide;
+        $scope.currentSlide = false;
+        $scope.slideNumber = presenter.registerSlide($scope);
+
+        $log.log('Registered slide ' + $scope.slideNumber);
+
+        function show(direction) {
+          $log.log('Showing slide ' + $scope.slideNumber + ' direction ' + direction);
+          $scope.currentSlide = true;
+        }
+
+        function hide(direction) {
+          $log.log('Hiding slide ' + $scope.slideNumber + ' direction ' + direction);
+          $scope.currentSlide = false;
+        }
       }
+
+    };
+  }]);
+
+  ngPresenter.directive('image', [function () {
+    return function ($scope, $element, $attr) {
+      var elementStyle = $element[0].style;
+      elementStyle['background-image'] = 'url(' + $attr.image + ')';
+      elementStyle['background-repeat'] = 'none';
     };
   }]);
 

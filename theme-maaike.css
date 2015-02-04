@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local("Source Sans Pro"), local("SourceSansPro-Regular"), url("fonts/SourceSansPro-Regular.woff2") format("woff2"); }
+
+@font-face {
+    font-family: 'Source Sans Pro Semibold';
+    font-style: normal;
+    font-weight: 600;
+    src: local("Source Sans Pro Semibold"), local("SourceSansPro-Semibold"), url("fonts/SourceSansPro-Regular.woff2") format("woff2"); }
+
+.presentation {
+    background-color: #0C3D4C;
+    color: #EEE;
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: normal;
+    letter-spacing: -0.02em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Source Sans Pro Semibold", sans-serif;
+    line-height: 1.1em;
+    letter-spacing: 0.02em;
+}
+
+[image] {
+    text-shadow: -2px -2px 5px black, -2px 2px 5px black, 2px -2px 5px black, 2px 2px 5px black;
+}
