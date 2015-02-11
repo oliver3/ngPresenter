@@ -68,7 +68,7 @@
       restrict: 'E',
       transclude: true,
       replace: true,
-      scope: true,
+      scope: false,
       template: '<div class="presentation">' +
                 '  <div class="slides" ng-transclude></div>' +
                 '  <div class="progressbar-background"><div class="progressbar" style="width: {{presenter.progress}}"></div></div>' +
@@ -89,20 +89,36 @@
     }
   }]);
 
-  ngPresenter.directive('slide', ['$log', '$animate', function ($log, $animate) {
+  ngPresenter.directive('slide', ['$log', '$animate', '$compile', function ($log, $animate, $compile) {
     return {
       restrict: 'E',
       transclude: true,
       replace: true,
       scope: true,
-      template: '<div class="slide" ng-transclude>' +
-                '</div>',
-      //template: '<div class="slide" ng-transclude></div>',
+      template: '<div class="slide"><div class="content" ng-transclude>' +
+                '</div></div>',
       require: '^presentation',
-      link: function ($scope, $element, $attr, presenter) {
+      link: function ($scope, $element, $attr, presenter, $transclude) {
         $scope.show = show;
         $scope.hide = hide;
         $scope.slideNumber = presenter.registerSlide($scope);
+
+        var content = $element.children().eq(0);
+        var html = content.html();
+
+        html = html.replace(/^(\s*)= (.*)$/gm, '$1<h1>$2</h1>');
+        html = html.replace(/^(\s*)== (.*)$/gm, '$1<h2>$2</h2>');
+        html = html.replace(/^(\s*)=== (.*)$/gm, '$1<h3>$2</h3>');
+        html = html.replace(/^(\s*)==== (.*)$/gm, '$1<h4>$2</h4>');
+        html = html.replace(/^(\s*)===== (.*)$/gm, '$1<h5>$2</h5>');
+        html = html.replace(/^(\s*)====== (.*)$/gm, '$1<h6>$2</h6>');
+
+        html = html.replace(/^(\s*)\* (.*)$/gm, '$1<li>$2</li>');
+
+        html = html.replace(/^(\s*)$/gm, '$1<hr style="border-width: 0">');
+
+        var compiled = $compile(html);
+        content.replaceWith(compiled($scope));
 
         $log.log('Registered slide ' + $scope.slideNumber);
 
