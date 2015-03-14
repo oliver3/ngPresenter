@@ -2,66 +2,83 @@
   var ngPresenter = angular.module('ngPresenter', ['ngAnimate']);
 
   ngPresenter.controller('PresenterController', ['$log', '$document', '$scope',
-      function ($log, $document, $scope) {
-    var presenter = this;
+    function ($log, $document, $scope) {
+      var presenter = this;
 
-    presenter.registerSlide = registerSlide;
-    presenter.nextSlide = nextSlide;
-    presenter.selectSlide = selectSlide;
-    presenter.progress = '0%';
+      presenter.registerSlide = registerSlide;
+      presenter.nextSlide = nextSlide;
+      presenter.selectSlide = selectSlide;
+      presenter.fullscreen = fullscreen;
+      presenter.progress = '0%';
 
-    var currentSlide = 0;
-    var slides = [];
+      var currentSlide = 0;
+      var slides = [];
 
-    function registerSlide(slide) {
-      $log.log('presenter.registerSlide()');
-      if (slides.length === 0) {
-        slide.show(0);
-      }
-      slides.push(slide);
-      return slides.length;
-    }
-
-    function nextSlide(offset) {
-      if (typeof offset === 'undefined') {
-        offset = 1;
-      }
-
-      presenter.selectSlide(currentSlide + offset);
-    }
-
-    function selectSlide(nr) {
-      if (nr < 0) {
-        nr = 0;
-      } else if (nr >= slides.length) {
-        nr = slides.length - 1;
-      }
-
-      var direction = nr - currentSlide;
-
-      if (direction !== 0) {
-        slides[currentSlide].hide(direction);
-        slides[nr].show(direction);
-
-        currentSlide = nr;
-        presenter.progress = (currentSlide / (slides.length - 1)) * 100 + '%';
-      }
-    }
-
-    $document.bind('keydown', function (event) {
-      $scope.$apply(function () {
-        switch (event.which) {
-          case 39:
-            presenter.nextSlide(1);
-            break;
-          case 37:
-            presenter.nextSlide(-1);
-            break;
+      function registerSlide(slide) {
+        $log.log('presenter.registerSlide()');
+        if (slides.length === 0) {
+          slide.show(0);
         }
-      });
-    });
+        slides.push(slide);
+        return slides.length;
+      }
 
-  }]);
+      function nextSlide(offset) {
+        if (typeof offset === 'undefined') {
+          offset = 1;
+        }
+
+        presenter.selectSlide(currentSlide + offset);
+      }
+
+      function selectSlide(nr) {
+        if (nr < 0) {
+          nr = 0;
+        } else if (nr >= slides.length) {
+          nr = slides.length - 1;
+        }
+
+        var direction = nr - currentSlide;
+
+        if (direction !== 0) {
+          slides[currentSlide].hide(direction);
+          slides[nr].show(direction);
+
+          currentSlide = nr;
+          presenter.progress = (currentSlide / (slides.length - 1)) * 100 + '%';
+        }
+      }
+
+      function fullscreen() {
+        var element = document.documentElement;
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        }
+      }
+
+      $document.bind('keydown', function (event) {
+        $scope.$apply(function () {
+          switch (event.which) {
+            case 39:
+              presenter.nextSlide(1);
+              break;
+            case 37:
+              presenter.nextSlide(-1);
+              break;
+            case 70:
+              presenter.fullscreen();
+              break;
+          }
+        });
+      });
+
+    }]);
 
   ngPresenter.directive('presentation', [function () {
     return {
@@ -193,7 +210,7 @@
     var result = [];
     if (csv) {
       var tuple = csv.split(',');
-      for (var i=0; i<tuple.length; i++) {
+      for (var i = 0; i < tuple.length; i++) {
         if (tuple[i] && isFinite(tuple[i])) {
           result[i] = Number(tuple[i]);
         }
