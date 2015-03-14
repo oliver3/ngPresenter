@@ -24,7 +24,10 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.02em;
 }
 
-.slide[image] > .content {
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 6vw 6vw;
+.slide.shadow .content {
   background: rgba(0, 0, 0, 0.2);
+}
+
+.slide.shadow-down .content {
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0.5));
 }
