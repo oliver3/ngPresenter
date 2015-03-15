@@ -112,15 +112,17 @@
       transclude: true,
       replace: true,
       scope: true,
-      template: '<div class="slide"><div class="content" ng-transclude>' +
-                '</div></div>',
+      template: '<div class="slide">' +
+                '  <div class="background"></div>' +
+                '  <div class="content" ng-transclude></div>' +
+                '</div>',
       require: '^presentation',
       link: function ($scope, $element, $attr, presenter, $transclude) {
         $scope.show = show;
         $scope.hide = hide;
         $scope.slideNumber = presenter.registerSlide($scope);
 
-        var content = $element.children().eq(0);
+        var content = angular.element($element[0].querySelector('.content'));
         var html = content.html();
 
         html = html.replace(/^(\s*)= (.*)$/gm, '$1<h1>$2</h1>');
@@ -145,6 +147,7 @@
           $element.toggleClass('show-backwards', direction < 0);
           $animate.addClass($element, 'show').then(function () {
             $element.removeClass('show-backwards');
+            $scope.$broadcast('slide-shown');
           });
         }
 
@@ -154,6 +157,7 @@
           $element.toggleClass('hide-backwards', direction < 0);
           $animate.removeClass($element, 'show').then(function () {
             $element.removeClass('hide-backwards');
+            $scope.$broadcast('slide-hidden');
           });
         }
       }
@@ -162,10 +166,33 @@
 
   ngPresenter.directive('image', [function () {
     return function ($scope, $element, $attr) {
-      var elementStyle = $element[0].style;
+      var elementStyle = $element[0].querySelector('.background').style;
       elementStyle['background-image'] = 'url(' + $attr.image + ')';
       elementStyle['background-repeat'] = 'none';
       elementStyle['background-size'] = 'cover';
+    };
+  }]);
+
+  ngPresenter.directive('bgZoom', ['$log', function ($log) {
+    return function ($scope, $element, $attr) {
+      var xyduration = parseNumberCSV($attr['bgZoom']);
+      var duration = xyduration[2] || 120;
+      var x = 50 - xyduration[0];
+      var y = 50 - xyduration[1];
+
+      $scope.$on('slide-shown', function () {
+        $log.log('Starting bgZoom animation');
+        var elementStyle = $element[0].querySelector('.background').style;
+        elementStyle['transition'] = 'transform ' + duration + 's ease-out';
+        elementStyle['transform'] = 'translate(' + x + '%, ' + y + '%) scale(2,2)';
+      });
+      $scope.$on('slide-hidden', function () {
+        $log.log('Stopping bgZoom animation');
+        var elementStyle = $element[0].querySelector('.background').style;
+        elementStyle['transition'] = 'none';
+        elementStyle['transform'] = 'translate(0,0) scale(1,1)';
+      });
+
     };
   }]);
 

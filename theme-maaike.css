@@ -29,5 +29,5 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .slide.shadow-down .content {
-  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0.5));
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0.6));
 }
