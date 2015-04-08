@@ -71,6 +71,11 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li {
   margin: 0 0 0.3em 0;
 }
 
+/* Reset ul, ol -webkit-padding-start (no 40px) */
+ul, ol {
+  -webkit-padding-start: 1.5em;
+}
+
 /* Image defaults */
 img {
   max-width: 100%;

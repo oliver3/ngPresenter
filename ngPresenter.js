@@ -106,7 +106,7 @@
     }
   }]);
 
-  ngPresenter.directive('slide', ['$log', '$animate', '$compile', function ($log, $animate, $compile) {
+  ngPresenter.directive('slide', ['$log', '$animate', '$compile', function ($log, $animate) {
     return {
       restrict: 'E',
       transclude: true,
@@ -117,27 +117,10 @@
                 '  <div class="content" ng-transclude></div>' +
                 '</div>',
       require: '^presentation',
-      link: function ($scope, $element, $attr, presenter, $transclude) {
+      link: function ($scope, $element, $attr, presenter) {
         $scope.show = show;
         $scope.hide = hide;
         $scope.slideNumber = presenter.registerSlide($scope);
-
-        var content = angular.element($element[0].querySelector('.content'));
-        var html = content.html();
-
-        html = html.replace(/^(\s*)= (.*)$/gm, '$1<h1>$2</h1>');
-        html = html.replace(/^(\s*)== (.*)$/gm, '$1<h2>$2</h2>');
-        html = html.replace(/^(\s*)=== (.*)$/gm, '$1<h3>$2</h3>');
-        html = html.replace(/^(\s*)==== (.*)$/gm, '$1<h4>$2</h4>');
-        html = html.replace(/^(\s*)===== (.*)$/gm, '$1<h5>$2</h5>');
-        html = html.replace(/^(\s*)====== (.*)$/gm, '$1<h6>$2</h6>');
-
-        html = html.replace(/^(\s*)\* (.*)$/gm, '$1<li>$2</li>');
-
-        //html = html.replace(/^(\s*)$/gm, '$1<hr style="border-width: 0">');
-
-        var compiled = $compile(html);
-        content.empty().append(compiled($scope));
 
         $log.log('Registered slide ' + $scope.slideNumber);
 
