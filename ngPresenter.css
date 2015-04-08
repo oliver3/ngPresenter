@@ -119,5 +119,35 @@ img {
   left: 100vw;
 }
 
+/**
+ * Slide overview
+ */
 
+.overview .slide {
+  width: 25%;
+  height: 25%;
+  font-size: 0.25em;
+  float: left;
+  display: block;
+  position: relative;
+  transition: none !important;
+  border: solid 1px black;
+}
+
+.overview .slide.show {
+  border: solid 1px white;
+}
+
+.overview .background {
+  transition: none !important;
+  transform: none !important;
+}
+
+.overview .progressbar {
+  display: none;
+}
+
+.overview .slides {
+  overflow-y: auto;
+}
 

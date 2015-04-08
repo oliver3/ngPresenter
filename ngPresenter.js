@@ -9,6 +9,7 @@
       presenter.nextSlide = nextSlide;
       presenter.selectSlide = selectSlide;
       presenter.fullscreen = fullscreen;
+      presenter.overview = overview;
       presenter.progress = '0%';
 
       var currentSlide = 0;
@@ -62,17 +63,28 @@
         }
       }
 
+      function overview() {
+        $document.find('body').toggleClass('overview');
+        scrollElementIntoViewIfNeeded(slides[currentSlide].element);
+      }
+
       $document.bind('keydown', function (event) {
         $scope.$apply(function () {
           switch (event.which) {
-            case 39:
+            case 39: // Right
               presenter.nextSlide(1);
               break;
-            case 37:
+            case 37: // Left
               presenter.nextSlide(-1);
               break;
-            case 70:
+            case 70: // F
               presenter.fullscreen();
+              break;
+            case 13: // Enter
+              presenter.overview();
+              break;
+            default:
+              $log.log('keydown ' + event.which);
               break;
           }
         });
@@ -106,7 +118,7 @@
     }
   }]);
 
-  ngPresenter.directive('slide', ['$log', '$animate', '$compile', function ($log, $animate) {
+  ngPresenter.directive('slide', ['$log', '$animate', function ($log, $animate) {
     return {
       restrict: 'E',
       transclude: true,
@@ -121,6 +133,7 @@
         $scope.show = show;
         $scope.hide = hide;
         $scope.slideNumber = presenter.registerSlide($scope);
+        $scope.element = $element;
 
         $log.log('Registered slide ' + $scope.slideNumber);
 
@@ -132,6 +145,9 @@
             $element.removeClass('show-backwards');
             $scope.$broadcast('slide-shown');
           });
+
+          // For overview
+          scrollElementIntoViewIfNeeded($element);
         }
 
         function hide(direction) {
@@ -228,5 +244,21 @@
     }
     return result;
   }
+
+  function scrollElementIntoViewIfNeeded($el) {
+    var MARGIN = 5;
+    var el = $el[0] || $el || {};
+
+    if (el.getBoundingClientRect && el.scrollIntoView) {
+      var rect = el.getBoundingClientRect();
+
+      if (rect.top < -MARGIN) {
+        el.scrollIntoView(true);
+      } else if (rect.bottom - el.parentNode.clientHeight > MARGIN) {
+        el.scrollIntoView(false);
+      }
+    }
+  }
+
 
 })();
