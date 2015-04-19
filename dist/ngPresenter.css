@@ -1,0 +1,187 @@
+/* Start the presentation hidden */
+presentation {
+  display: none;
+}
+
+/* Full screen background, prevent accidental scroll */
+html, body, .presentation {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: black;
+}
+
+.presentation {
+  max-width: 188vh; /* 17:9 */
+  max-height: 75vw; /* 4:3 */
+  font-size: 4vw;
+  position: absolute;
+}
+
+@media all and (min-aspect-ratio: 17/9) {
+  div.presentation {
+    font-size: 7.55vh;
+  }
+}
+
+.slides, .slide, .content, .background {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Initial font-size relative to viewport */
+.presentation {
+  /* font-size: 36px; Some fallback that doesn't look awful */
+  font-size: 4vw;
+}
+
+/* progressbar */
+.progressbar-background {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  height: 0.1em;
+}
+
+.progressbar {
+  height: 100%;
+  background-color: white;
+  transition: width 0.5s;
+}
+
+.slide {
+  background-color: inherit;
+  display: none;
+  position: absolute;
+}
+
+.slide .content {
+  padding: 10%;
+  position: absolute;
+  /* position it over the background */
+  top: 0;
+}
+
+/* Reduce margin */
+h1, h2, h3, h4, h5, h6, p, ul, ol, li {
+  margin: 0 0 0.3em 0;
+}
+
+/* Reset ul, ol -webkit-padding-start (no 40px) */
+ul, ol {
+  -webkit-padding-start: 1.5em;
+}
+
+/* Image defaults */
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/**
+ * Slide animations
+ */
+
+.slide.show {
+  display: block;
+}
+
+.slide.show-add {
+  display: block;
+  left: 100vw;
+}
+
+.slide.show-add.show-backwards {
+  left: -100vw;
+}
+
+.slide.show-add.show-add-active {
+  transition: left 0.3s;
+  left: 0;
+}
+
+.slide.show-remove {
+  display: block;
+  left: 0;
+}
+
+.slide.show-remove.show-remove-active {
+  transition: left 0.3s;
+  left: -100vw;
+}
+
+.slide.show-remove-active.hide-backwards {
+  transition: left 0.3s;
+  left: 100vw;
+}
+
+/**
+ * Slide overview
+ */
+
+.overview .slide {
+  width: 25%;
+  height: 25%;
+  font-size: 0.25em;
+  float: left;
+  display: block;
+  position: relative;
+  transition: none !important;
+  border: solid 1px black;
+}
+
+.overview .slide.show {
+  border: solid 1px white;
+}
+
+.overview .background {
+  transition: none !important;
+  transform: none !important;
+}
+
+.overview .progressbar {
+  display: none;
+}
+
+.overview .slides {
+  overflow-y: auto;
+}
+
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local("Source Sans Pro"), local("SourceSansPro-Regular"), url("fonts/SourceSansPro-Regular.woff2") format("woff2"); }
+
+@font-face {
+    font-family: 'Source Sans Pro Semibold';
+    font-style: normal;
+    font-weight: 600;
+    src: local("Source Sans Pro Semibold"), local("SourceSansPro-Semibold"), url("fonts/SourceSansPro-Regular.woff2") format("woff2"); }
+
+.presentation {
+    background-color: #0C3D4C;
+    color: #EEE;
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: normal;
+    letter-spacing: -0.02em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Source Sans Pro Semibold", sans-serif;
+    line-height: 1.1em;
+    letter-spacing: 0.02em;
+}
+
+.slide.shadow .content {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.slide.shadow-down .content {
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0.6));
+}

@@ -1,0 +1,25 @@
+{
+  "name": "ngPresenter",
+  "version": "0.0.0",
+  "description": "Framework to create HTML presentations, using AngularJS",
+  "main": "index.html",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oliver3/ngPresenter.git"
+  },
+  "author": "Oliver Verver",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oliver3/ngPresenter/issues"
+  },
+  "homepage": "https://github.com/oliver3/ngPresenter"
+}
