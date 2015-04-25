@@ -18,12 +18,7 @@ gulp.task('css', function() {
     .pipe(gulp.dest(dist));
 });
 
-gulp.task('fonts', function () {
-  return gulp.src('src/fonts/**/*.woff2')
-    .pipe(gulp.dest(dist + 'fonts'));
-});
-
-gulp.task('watch', ['fonts', 'css', 'js'], function() {
+gulp.task('watch', ['css', 'js'], function() {
   gulp.watch(cssSources, ['css']);
   gulp.watch(jsSources, ['js']);
 });
