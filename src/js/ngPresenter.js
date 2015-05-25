@@ -1,6 +1,10 @@
 (function () {
   var ngPresenter = angular.module('ngPresenter', ['ngAnimate']);
 
+  angular.element(document).ready(function() {
+    angular.bootstrap(document, ['ngPresenter']);
+  });
+
   ngPresenter.controller('PresenterController', ['$log', '$document', '$scope',
     function ($log, $document, $scope) {
       var presenter = this;
@@ -92,11 +96,11 @@
 
     }]);
 
-  ngPresenter.directive('presentation', [function () {
+  ngPresenter.directive('body', [function () {
     return {
       restrict: 'E',
       transclude: true,
-      replace: true,
+      replace: false,
       scope: false,
       template: '<div class="presentation">' +
                 '  <div class="slides" ng-transclude></div>' +
@@ -107,18 +111,7 @@
     };
   }]);
 
-  ngPresenter.directive('group', [function () {
-    return {
-      restrict: 'E',
-      transclude: true,
-      replace: true,
-      scope: true,
-      template: '<div class="group" ng-transclude></div>',
-      require: '^presentation'
-    }
-  }]);
-
-  ngPresenter.directive('slide', ['$log', '$animate', function ($log, $animate) {
+  ngPresenter.directive('section', ['$log', '$animate', function ($log, $animate) {
     return {
       restrict: 'E',
       transclude: true,
@@ -128,7 +121,7 @@
                 '  <div class="background"></div>' +
                 '  <div class="content" ng-transclude></div>' +
                 '</div>',
-      require: '^presentation',
+      require: '^body',
       link: function ($scope, $element, $attr, presenter) {
         $scope.show = show;
         $scope.hide = hide;
@@ -208,17 +201,19 @@
         elementStyle['position'] = 'absolute';
 
         if (x !== undefined) {
-          if (x >= 0) {
+          if (x > 0 || (x === 0 && 1/x > 0)) {
             elementStyle['left'] = x + '%';
           } else {
+            // includes negative zero
             elementStyle['right'] = (-x) + '%';
           }
         }
 
         if (y !== undefined) {
-          if (y >= 0) {
+          if (y > 0 || (y === 0 && 1/y > 0)) {
             elementStyle['top'] = y + '%';
           } else {
+            // includes negative zero
             elementStyle['bottom'] = (-y) + '%';
           }
         }
